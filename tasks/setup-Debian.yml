@@ -16,7 +16,7 @@
     owner: root
     group: root
     mode: '0444'
-  register: node_signing_key
+  register: nodejs_signing_key
 
 - name: Add NodeSource repositories for Node.js.
   ansible.builtin.deb822_repository:
@@ -25,13 +25,13 @@
     types: deb
     suites: nodistro
     components: main
-    signed_by: "{{ node_signing_key.dest }}"
+    signed_by: "{{ nodejs_signing_key.dest }}"
     state: present
-  register: node_repo
+  register: nodejs_repo
 
 - name: Update apt cache if repo was added.
   ansible.builtin.apt: update_cache=yes
-  when: node_repo is changed
+  when: nodejs_repo is changed
   tags: ['skip_ansible_lint']
 
 - name: Ensure Node.js and npm are installed.
