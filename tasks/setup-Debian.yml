@@ -38,3 +38,6 @@
   ansible.builtin.apt:
     name: "nodejs={{ nodejs_version | regex_replace('x', '') }}*"
     state: present
+  register: nodejs_pkg_install_task
+  failed_when: nodejs_pkg_install_task is failed and not (nodejs_repo is changed and ansible_check_mode)
+  changed_when: nodejs_pkg_install_task is changed or nodejs_pkg_install_task is failed and (nodejs_repo is changed and ansible_check_mode)

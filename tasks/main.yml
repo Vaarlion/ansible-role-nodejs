@@ -36,8 +36,14 @@
     NODE_PATH: "{{ npm_config_prefix }}/lib/node_modules"
     NPM_CONFIG_UNSAFE_PERM: "{{ npm_config_unsafe_perm }}"
   with_items: "{{ nodejs_npm_global_packages }}"
+  register: nodejs_npm_global_packages_install_task
+  failed_when: nodejs_npm_global_packages_install_task is failed and not (node_apt_install_task is changed and ansible_check_mode)
+  changed_when: nodejs_npm_global_packages_install_task is changed or nodejs_npm_global_packages_install_task is failed and (node_apt_install_task is changed and ansible_check_mode)
 
 - name: Install packages defined in a given package.json.
   npm:
     path: "{{ nodejs_package_json_path }}"
   when: nodejs_package_json_path is defined and nodejs_package_json_path
+  register: nodejs_npm_json_path_install_task
+  failed_when: nodejs_npm_json_path_install_task is failed and not (node_apt_install_task is changed and ansible_check_mode)
+  changed_when: nodejs_npm_json_path_install_task is changed or nodejs_npm_json_path_install_task is failed and (node_apt_install_task is changed and ansible_check_mode)
